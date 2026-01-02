@@ -14,7 +14,7 @@ import (
 )
 
 func NewPostgresDB(cfg *config.Config) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=require TimeZone=Asia/Jakarta prefer_simple_protocol=true",
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta",
 		cfg.DBHost,
 		cfg.DBUser,
 		cfg.DBPassword,

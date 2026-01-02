@@ -1,7 +1,9 @@
 package services
 
 import (
+	"context"
 	"errors"
+	"time"
 
 	"github.com/bagussubagja/backend-payment-gateway-go/config"
 	"github.com/bagussubagja/backend-payment-gateway-go/internal/models"
@@ -13,6 +15,8 @@ type AuthService interface {
 	Register(req *models.RegisterRequest) (*models.User, error)
 	Login(req *models.LoginRequest) (*models.LoginResponse, error)
 	ValidateToken(tokenString string) (uint, error)
+	BlacklistToken(ctx context.Context, token string) error
+	IsTokenBlacklisted(ctx context.Context, token string) bool
 }
 
 type authService struct {
@@ -85,4 +89,13 @@ func (s *authService) Login(req *models.LoginRequest) (*models.LoginResponse, er
 
 func (s *authService) ValidateToken(tokenString string) (uint, error) {
 	return utils.ValidateToken(tokenString, s.cfg.JWTSecretKey)
+}
+
+func (s *authService) BlacklistToken(ctx context.Context, token string) error {
+	return config.RedisClient.Set(ctx, token, "true", 24*time.Hour).Err()
+}
+
+func (s *authService) IsTokenBlacklisted(ctx context.Context, token string) bool {
+	val, _ := config.RedisClient.Get(ctx, token).Result()
+	return val == "true"
 }

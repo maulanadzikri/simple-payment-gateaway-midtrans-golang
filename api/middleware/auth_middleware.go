@@ -25,6 +25,15 @@ func AuthMiddleware(authService services.AuthService) gin.HandlerFunc {
 		}
 
 		tokenString := parts[1]
+
+		// cek blacklist redis dulu
+		if authService.IsTokenBlacklisted(c.Request.Context(), tokenString) {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token is no longer valid (already logged out)"})
+			c.Abort()
+			return
+		}
+
+		// baru cek JWT
 		userID, err := authService.ValidateToken(tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token", "details": err.Error()})

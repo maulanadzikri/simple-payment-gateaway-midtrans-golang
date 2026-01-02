@@ -1,15 +1,30 @@
 package routes
 
 import (
+	"time"
+
 	"github.com/bagussubagja/backend-payment-gateway-go/api/handler"
 	"github.com/bagussubagja/backend-payment-gateway-go/api/middleware"
 	"github.com/bagussubagja/backend-payment-gateway-go/config"
 	"github.com/bagussubagja/backend-payment-gateway-go/internal/services"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter(authSvc services.AuthService, userSvc services.UserService, paymentSvc services.PaymentService, cfg *config.Config) *gin.Engine {
 	r := gin.Default()
+
+	r.Use(cors.New(cors.Config{
+		AllowOrigins: []string{
+			"http://localhost:3000", 
+			// "https://525a355aecd6.ngrok-free.app",	
+		},
+		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
+		AllowHeaders: []string{"Origin", "Content-Type","Accept", "Authorization", "X-Requested-With"},
+		ExposeHeaders: []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge: 12 * time.Hour,
+	}))
 
 	entryHandler := handler.NewEntryHandler()
 	authHandler := handler.NewAuthHandler(authSvc)

@@ -23,6 +23,8 @@ func main() {
 	}
 	fmt.Println("Database connected successfully")
 
+	config.InitRedis()	
+
 	userRepo := repository.NewUserRepository(db)
 	transactionRepo := repository.NewTransactionRepository(db)
 
