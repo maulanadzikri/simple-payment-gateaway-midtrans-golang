@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Try localhost first, if doesn't work use the IP address
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://hrc8nxrp-8080.asse.devtunnels.ms/api/v1';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api/v1';
 // Alternative: 'http://192.168.1.8:8080/api/v1'
 
 const api = axios.create({
